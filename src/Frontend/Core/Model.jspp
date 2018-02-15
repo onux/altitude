@@ -1,0 +1,337 @@
+module Altitude.Frontend
+{
+    /**
+     * The `Model` abstract class is the abstract base class for models in
+     * Altitude MVC/MVP applications.
+     *
+     * In Altitude, business logic should be contained in the models.
+     *
+     * @summary The abstract base class for models.
+     * @example Basic Usage
+     * import System;
+     * import Altitude.Frontend;
+     *
+     * // Create the model
+     * class Temperature : Model
+     * {
+     *     Date date;
+     *     double degrees;
+     *
+     *     Temperature(Date date, double degrees) {
+     *         this.date = date;
+     *         this.degrees = degrees;
+     *     }
+     *
+     *     void setDegrees(double degrees) {
+     *         this.degrees = degrees;
+     *     }
+     * }
+     * // Create multiple views
+     * class BarChart : View
+     * {
+     *     // ...
+     * }
+     * class LineChart : View
+     * {
+     *     // ...
+     * }
+     *
+     * // Instantiate models
+     * Temperature temp1 = new Temperature(new Date(), 27);
+     * Temperature temp2 = new Temperature(new Date(), 30);
+     *
+     * // Instantiate views
+     * BarChart barChart = new BarChart();
+     * LineChart lineChart = new LineChart();
+     *
+     * // Attach views to models
+     * temp1.attach(barChart);
+     * temp1.attach(lineChart);
+     * temp2.attach(barChart);
+     * temp2.attach(lineChart);
+     *
+     * // Initialize views (perform initial render) to the data in `temp1`.
+     * // (Assuming data for `temp2` is initially hidden until the user, via
+     * // the user interface, enables it.)
+     * barChart.initialize(temp1);
+     * lineChart.initialize(temp1);
+     *
+     * // Change the data from the initial render
+     * temp1.setDegrees(37);
+     * temp2.setDegrees(40);
+     *
+     * // Update all views
+     * temp1.updateAll();
+     * temp2.updateAll();
+     *
+     * // Detach a view
+     * temp1.detach(lineChart);
+     *
+     * // Update again...
+     * temp1.updateAll(); // Now only the bar chart gets updated for `temp1`'s data
+     */
+    abstract class Model
+    {
+        private View[] views = [];
+
+        /**
+         * Attaches a view to the model. When the model data changes (such as
+         * via `Model.updateAll()`), the attached view(s) will also be updated.
+         *
+         * @summary Attaches a view to the model.
+         * @param view The view to attach to the model.
+         * @example Full Example
+         * import System;
+         * import Altitude.Frontend;
+         *
+         * // Create the model
+         * class Temperature : Model
+         * {
+         *     Date date;
+         *     double degrees;
+         *
+         *     Temperature(Date date, double degrees) {
+         *         this.date = date;
+         *         this.degrees = degrees;
+         *     }
+         *
+         *     void setDegrees(double degrees) {
+         *         this.degrees = degrees;
+         *     }
+         * }
+         * // Create view
+         * class BarChart : View
+         * {
+         *     // ...
+         * }
+         *
+         * // Instantiate model
+         * Temperature temp = new Temperature(new Date(), 27);
+         *
+         * // Instantiate view
+         * BarChart barChart = new BarChart();
+         *
+         * // Attach views to model
+         * temp.attach(barChart);
+         *
+         * // Initialize views (perform initial render) to the data in `temp`.
+         * // (Assuming data for `temp2` is initially hidden until the user, via
+         * // the user interface, enables it.)
+         * barChart.initialize(temp);
+         *
+         * // Change the data from the initial render
+         * temp.setDegrees(37);
+         *
+         * // Update all views
+         * temp.updateAll();
+         */
+        public virtual void attach(View view) {
+            views.push(view);
+        }
+        /**
+         * Detaches an attached view from the model. When the model data changes
+         * (such as via `Model.updateAll()`), the detached view(s) will no
+         * longer be updated.
+         *
+         * @summary Detaches a view from the model.
+         * @param view The view to detach from the model.
+         * @example Full Example
+         * import System;
+         * import Altitude.Frontend;
+         *
+         * // Create the model
+         * class Temperature : Model
+         * {
+         *     Date date;
+         *     double degrees;
+         *
+         *     Temperature(Date date, double degrees) {
+         *         this.date = date;
+         *         this.degrees = degrees;
+         *     }
+         *
+         *     void setDegrees(double degrees) {
+         *         this.degrees = degrees;
+         *     }
+         * }
+         * // Create multiple views
+         * class BarChart : View
+         * {
+         *     // ...
+         * }
+         * class LineChart : View
+         * {
+         *     // ...
+         * }
+         *
+         * // Instantiate models
+         * Temperature temp1 = new Temperature(new Date(), 27);
+         * Temperature temp2 = new Temperature(new Date(), 30);
+         *
+         * // Instantiate views
+         * BarChart barChart = new BarChart();
+         * LineChart lineChart = new LineChart();
+         *
+         * // Attach views to models
+         * temp1.attach(barChart);
+         * temp1.attach(lineChart);
+         * temp2.attach(barChart);
+         * temp2.attach(lineChart);
+         *
+         * // Initialize views (perform initial render) to the data in `temp1`.
+         * // (Assuming data for `temp2` is initially hidden until the user, via
+         * // the user interface, enables it.)
+         * barChart.initialize(temp1);
+         * lineChart.initialize(temp1);
+         *
+         * // Change the data from the initial render
+         * temp1.setDegrees(37);
+         * temp2.setDegrees(40);
+         *
+         * // Update all views
+         * temp1.updateAll();
+         * temp2.updateAll();
+         *
+         * // Detach a view
+         * temp1.detach(lineChart);
+         *
+         * // Update again...
+         * temp1.updateAll(); // Now only the bar chart gets updated for `temp1`'s data
+         */
+        public virtual void detach(View view) {
+            views.remove(views.indexOf(view));
+        }
+
+        /**
+         * Updates all the views attached to the model to show the current data
+         * in the model.
+         *
+         * @summary Updates all attached views.
+         * @example Full Example
+         * import System;
+         * import Altitude.Frontend;
+         *
+         * // Create the model
+         * class Temperature : Model
+         * {
+         *     Date date;
+         *     double degrees;
+         *
+         *     Temperature(Date date, double degrees) {
+         *         this.date = date;
+         *         this.degrees = degrees;
+         *     }
+         *
+         *     void setDegrees(double degrees) {
+         *         this.degrees = degrees;
+         *     }
+         * }
+         * // Create multiple views
+         * class BarChart : View
+         * {
+         *     // ...
+         * }
+         * class LineChart : View
+         * {
+         *     // ...
+         * }
+         *
+         * // Instantiate models
+         * Temperature temp1 = new Temperature(new Date(), 27);
+         * Temperature temp2 = new Temperature(new Date(), 30);
+         *
+         * // Instantiate views
+         * BarChart barChart = new BarChart();
+         * LineChart lineChart = new LineChart();
+         *
+         * // Attach views to models
+         * temp1.attach(barChart);
+         * temp1.attach(lineChart);
+         * temp2.attach(barChart);
+         * temp2.attach(lineChart);
+         *
+         * // Initialize views (perform initial render) to the data in `temp1`.
+         * // (Assuming data for `temp2` is initially hidden until the user, via
+         * // the user interface, enables it.)
+         * barChart.initialize(temp1);
+         * lineChart.initialize(temp1);
+         *
+         * // Change the data from the initial render
+         * temp1.setDegrees(37);
+         * temp2.setDegrees(40);
+         *
+         * // Update all views
+         * temp1.updateAll();
+         * temp2.updateAll();
+         */
+        public virtual void updateAll() {
+            foreach(View view in this.views) {
+                view.updateAll(this);
+                view.render();
+            }
+        }
+
+        /**
+         * Enables precise control over updates to the attached view(s) by
+         * passing a changeset to the views. Views respond to the changeset
+         * arbitrarily. This enables custom view updating logic such as DOM
+         * diffing and other fine-grained UI updates.
+         *
+         * Unlike `Model.updateAll`, this method will not re-render the entire
+         * view (unless explicitly specified to do so in the view code).
+         *
+         * @summary Broadcasts the specified changeset to all attached views.
+         * @param changes The changeset to pass to the views.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * class Menu : Model
+         * {
+         *      public void select(string href) {
+         *          this.updateOnly([ new Change("menu-item", href) ]);
+         *      }
+         *  }
+         */
+        public virtual void updateOnly(Change[] changes) {
+            foreach(View view in this.views) {
+                view.updateOnly(changes);
+            }
+        }
+
+        // TODO: Once JS++ mirrors (Reflection API) becomes available, make
+        // this method 'virtual' and provide a default implementation that
+        // iterates all fields and generates JavaScript object.
+        /**
+         * Converts the data from an internal JS++ type to an external
+         * JavaScript type for view rendering. The view rendering depends on the
+         * `Handlebars` JavaScript library so the model data must be converted
+         * to a format that JavaScript understands.
+         *
+         * This method must be overridden for view rendering to work.
+         *
+         * @summary Converts the model data to an external JavaScript format for
+         *          view rendering.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * class Employee : Model
+         * {
+         *     string firstName;
+         *     string lastName;
+         *
+         *     Employee(string firstName, string lastName) {
+         *         this.firstName = firstName;
+         *         this.lastName = lastName;
+         *     }
+         *
+         *     override function toExternal() {
+         *         return {
+         *             "firstName": this.firstName,
+         *             "lastName": this.lastName
+         *         };
+         *     }
+         * }
+         */
+        public abstract function toExternal();
+    }
+}

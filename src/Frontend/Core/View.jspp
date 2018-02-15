@@ -1,0 +1,209 @@
+import System;
+
+external Handlebars;
+
+module Altitude.Frontend
+{
+    /**
+     * The `View` abstract class is the abstract base class for views in
+     * Altitude MVC/MVP applications.
+     * 
+     * In Altitude, views should be separated from the domain ("dumb view").
+     *
+     * @summary The abstract base class for views.
+     * @example Basic Usage
+     * import Altitude.Frontend;
+     *
+     * external jQuery, $; // Import jQuery (optional)
+     *
+     * class Contact : View
+     * {
+     *     // Construct a view based on the specified template
+     *     Contact() {
+     *         super(
+     *             """
+     *             <div class="contact">{{firstName}} {{lastName}}</div>
+     *             """
+     *         );
+     *     }
+     *
+     *     // Describe how the HTML gets rendered once the model changes
+     *     override renderTemplate(string html) {
+     *         $("#contact").html(html);
+     *     }
+     * }
+     */
+    abstract class View
+    {
+        /**
+         * The generated HTML output after the data has been applied to the
+         * template.
+         *
+         * @summary The generated HTML output.
+         */
+        protected string html;
+        /**
+         * The compiled `Handlebars` template.
+         *
+         * @summary The compiled `Handlebars` template.
+         */
+        protected var template;
+
+        /**
+         * Constructs a view and binds it to the specified Handlebars template.
+         *
+         * @param template A Handlebars template.
+         * @return A `View` instance.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * external jQuery, $; // Import jQuery (optional)
+         *
+         * class Contact : View
+         * {
+         *     // Construct a view based on the specified template
+         *     Contact() {
+         *         super(
+         *             """
+         *             <div class="contact">{{firstName}} {{lastName}}</div>
+         *             """
+         *         );
+         *     }
+         *
+         *     // Describe how the HTML gets rendered once the model changes
+         *     override renderTemplate(string html) {
+         *         $("#contact").html(html);
+         *     }
+         * }
+         */
+        public View(string template) {
+            this.template = Handlebars.compile(template);
+        }
+
+        /**
+         * Performs the initial render by calling `View.updateAll` and
+         * `View.render` (in order).
+         *
+         * @summary Performs the initial render.
+         * @param model The model to perform the initial render with.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * class ContactModel : Model
+         * {
+         *     string name = "Test";
+         *
+         *     override function toExternal() {
+         *         return {
+         *             name: this.name
+         *         };
+         *     }
+         * }
+         * class ContactView : View
+         * {
+         *     ContactView() {
+         *         super("<div>{{name}}</div>");
+         *     }
+         * }
+         *
+         * ContactModel model = new ContactModel();
+         * ContactView view = new ContactView();
+         * model.attach(view);
+         * view.initialize(model);
+         */
+        public void initialize(Model model) {
+            this.updateAll(model);
+            this.render();
+        }
+
+        /*
+         * Updates the view in response to reflect the latest model data.
+         *
+         * This method should not be called directly from user code. It is
+         * called internally by Altitude models (represented by the `Model`
+         * abstract class) to respond to the `Model.updateAll` method.
+         *
+         * @summary Updates the view to reflect the latest model data. This is
+         *          an internal method that should not be called from user code.
+         */
+        public void updateAll(Model model) {
+            var context = model.toExternal();
+            this.html = this.template(context);
+        }
+
+        /**
+         * Updates the view in response to changes in the model. Override this
+         * method in order to exercise precise control over UI updates - such as
+         * DOM diffing or individual DOM element changes.
+         *
+         * The default implementation for this is NOP (no operation). This
+         * method needs to be overridden.
+         *
+         * This method responds to the `Model.updateOnly` method.
+         *
+         * @summary Updates the view in response to specific changes in the
+         *          model.
+         * @param changes The changeset received from the model.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * class Menu : View
+         * {
+         *     Menu() {
+         *         super(Templates.Menu.template);
+         *     }
+         *
+         *     override void updateOnly(Change[] changes) {
+         *         foreach(Change change in changes) {
+         *             if (change.key == "menu-item") {
+         *                 selectMenuItem((System.String) change.value);
+         *                 continue;
+         *             }
+         *         }
+         *     }
+         * }
+         */
+        public virtual void updateOnly(Change[] changes) {}
+
+        /**
+         * Override this template method to specify how the generated HTML
+         * should be rendered.
+         *
+         * @summary The template method for specifying how the generated HTML
+         *          should be rendered.
+         * @param html The generated HTML. The generated HTML will be passed
+         *             into this template method.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * external jQuery, $;
+         *
+         * class Menu : View
+         * {
+         *     Menu() {
+         *         super(Templates.Menu.template);
+         *     }
+         *
+         *     override void renderTemplate(string html) {
+         *         $("#left-sidebar-container").html(html);
+         *     }
+         * }
+         */
+        public abstract void renderTemplate(string html);
+        /*
+         * Renders the generated HTML.
+         *
+         * This method should not be called directly from user code. It is
+         * called internally by Altitude models (represented by the `Model`
+         * abstract class). Instead, override the template method
+         * (`View.renderTemplate`) to specify how the generated HTML should be
+         * rendered.
+         *
+         * @summary Renders the generated HTML. This is an internal method that
+         *          should not be called from user code.
+         */
+        public void render() {
+            this.renderTemplate(this.html);
+        }
+    }
+}
