@@ -1,0 +1,11 @@
+/**
+ * The Altitude Frontend module provides classes and functions for building
+ * application frontends, such as browser-based single-page applications.
+ *
+ * @summary Provides classes and functions for building application frontends,
+ *          such as browser-based single-page applications.
+ */
+module Altitude.Frontend
+{
+    /* INTENTIONALLY EMPTY */
+}

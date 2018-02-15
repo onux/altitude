@@ -1,0 +1,9 @@
+/**
+ * Altitude is an MVC/MVP framework for the JS++ programming language.
+ *
+ * @summary Altitude is an MVC/MVP framework for the JS++ programming language.
+ */
+module Altitude
+{
+    /* INTENTIONALLY EMPTY */
+}
