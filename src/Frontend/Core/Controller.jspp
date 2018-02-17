@@ -1,122 +1,122 @@
 module Altitude.Frontend
 {
-	/**
-	 * The `Controller` abstract class is the abstract base class for
-	 * controllers in Altitude MVC/MVP applications.
-	 *
-	 * Attaching views to models (via the observer pattern) and listening for
-	 * user input events are done in individual methods to enable easy testing.
-	 * In your application code, attach views and listen for events; in your
-	 * test code, do not attach the views and do not listen for events.
-	 *
-	 * @summary The abstract base class for controllers.
-	 * @example Basic Usage
-	 * import Altitude.Frontend;
-	 *
-	 * external $;
-	 *
-	 * class CustomersController : Controller
-	 * {
-	 *     Views.Customers view = new Views.Customers();
-	 *     Models.Customers model = new Models.Customers();
-	 *
-	 *     public override void attachViews() {
-	 *         this.model.attach(this.view);
-	 *     }
-	 *
-	 *     public override void listenEvents() {
-	 *         $("#customers").click(function() {
-	 *             // ...
-	 *         });
-	 *     }
-	 * }
-	 *
-	 * CustomersController customersController = new CustomersController();
-	 * customersController.attachViews();  // Do not do this in your tests
-	 * customersController.listenEvents(); // Do not do this in your tests
-	 *
-	 * @example Decoupling Controller from the Web Browser / DOM Input Events
-	 * import Altitude.Frontend;
-	 * import Altitude.Frontend.ViewEngines;
-	 *
-	 * class CustomersController : Controller
-	 * {
-	 *     IViewEngine viewEngine;
-	 *     Views.Customers view = new Views.Customers();
-	 *     Models.Customers model = new Models.Customers();
-	 *
-	 *     // Use dependency injection to allow applications to specify the
-	 *     // concrete implementation of `IViewEngine` to use (such as
-	 *     // `BrowserViewEngine` for web browsers).
-	 *     public CustomersController(IViewEngine viewEngine) {
-	 *         this.viewEngine = viewEngine;
-	 *     }
-	 *
-	 *     public override void attachViews() {
-	 *         this.model.attach(this.view);
-	 *     }
-	 *
-	 *     public override void listenEvents() {
-	 *         viewEngine.get("customers").on("click", function() {
-	 *             // ...
-	 *         });
-	 *     }
-	 * }
-	 */
-	abstract class Controller
-	{
-		/**
-		 * Override this method to provide isolated code for attaching event
-		 * listeners. This isolated method enables clean separation of test
-		 * code. In your test code, event listeners should not be attached;
-		 * thus, this method should not be called during testing even if it is
-		 * overridden.
-		 *
-		 * @summary The method to override to attach event listeners.
-		 * @example Basic Usage
-		 * import Altitude.Frontend;
-		 *
-		 * external $;
-		 *
-		 * class CustomersController : Controller
-		 * {
-		 *     public override void listenEvents() {
-		 *         $("#customers").click(function() {
-		 *             // ...
-		 *         });
-		 *     }
-		 * }
-		 *
-		 * CustomersController controller = new CustomersController();
-		 * controller.listenEvents();
-		 */
-		public abstract void listenEvents();
-		/**
-		 * Override this method to provide isolated code for attaching views to
-		 * models. This isolated method enables clean separation of test code.
-		 * In your test code, avoid attaching views to make business logic
-		 * easily testable.
-		 *
-		 * @summary The method to override to isolate code for attaching views
-		 *          to models.
-		 * @example Basic Usage
-		 * import Altitude.Frontend;
-		 *
-		 * external $;
-		 *
-		 * class CustomersController : Controller
-		 * {
-		 *     Views.Customers view = new Views.Customers();
-		 *     Models.Customers model = new Models.Customers();
-		 *
-		 *     public override void attachViews() {
-		 *         this.model.attach(this.view);
-		 *     }
-		 * }
-		 *
-		 * CustomersController controller = new CustomersController();
-		 * controller.attachViews();
-		 */
-		public abstract void attachViews();
-	}
+    /**
+     * The `Controller` abstract class is the abstract base class for
+     * controllers in Altitude MVC/MVP applications.
+     *
+     * Attaching views to models (via the observer pattern) and listening for
+     * user input events are done in individual methods to enable easy testing.
+     * In your application code, attach views and listen for events; in your
+     * test code, do not attach the views and do not listen for events.
+     *
+     * @summary The abstract base class for controllers.
+     * @example Basic Usage
+     * import Altitude.Frontend;
+     *
+     * external $;
+     *
+     * class CustomersController : Controller
+     * {
+     *     Views.Customers view = new Views.Customers();
+     *     Models.Customers model = new Models.Customers();
+     *
+     *     public override void attachViews() {
+     *         this.model.attach(this.view);
+     *     }
+     *
+     *     public override void listenEvents() {
+     *         $("#customers").click(function() {
+     *             // ...
+     *         });
+     *     }
+     * }
+     *
+     * CustomersController customersController = new CustomersController();
+     * customersController.attachViews();  // Do not do this in your tests
+     * customersController.listenEvents(); // Do not do this in your tests
+     *
+     * @example Decoupling Controller from the Web Browser / DOM Input Events
+     * import Altitude.Frontend;
+     * import Altitude.Frontend.ViewEngines;
+     *
+     * class CustomersController : Controller
+     * {
+     *     IViewEngine viewEngine;
+     *     Views.Customers view = new Views.Customers();
+     *     Models.Customers model = new Models.Customers();
+     *
+     *     // Use dependency injection to allow applications to specify the
+     *     // concrete implementation of `IViewEngine` to use (such as
+     *     // `BrowserViewEngine` for web browsers).
+     *     public CustomersController(IViewEngine viewEngine) {
+     *         this.viewEngine = viewEngine;
+     *     }
+     *
+     *     public override void attachViews() {
+     *         this.model.attach(this.view);
+     *     }
+     *
+     *     public override void listenEvents() {
+     *         viewEngine.get("customers").on("click", function() {
+     *             // ...
+     *         });
+     *     }
+     * }
+     */
+    abstract class Controller
+    {
+        /**
+         * Override this method to provide isolated code for attaching event
+         * listeners. This isolated method enables clean separation of test
+         * code. In your test code, event listeners should not be attached;
+         * thus, this method should not be called during testing even if it is
+         * overridden.
+         *
+         * @summary The method to override to attach event listeners.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * external $;
+         *
+         * class CustomersController : Controller
+         * {
+         *     public override void listenEvents() {
+         *         $("#customers").click(function() {
+         *             // ...
+         *         });
+         *     }
+         * }
+         *
+         * CustomersController controller = new CustomersController();
+         * controller.listenEvents();
+         */
+        public abstract void listenEvents();
+        /**
+         * Override this method to provide isolated code for attaching views to
+         * models. This isolated method enables clean separation of test code.
+         * In your test code, avoid attaching views to make business logic
+         * easily testable.
+         *
+         * @summary The method to override to isolate code for attaching views
+         *          to models.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * external $;
+         *
+         * class CustomersController : Controller
+         * {
+         *     Views.Customers view = new Views.Customers();
+         *     Models.Customers model = new Models.Customers();
+         *
+         *     public override void attachViews() {
+         *         this.model.attach(this.view);
+         *     }
+         * }
+         *
+         * CustomersController controller = new CustomersController();
+         * controller.attachViews();
+         */
+        public abstract void attachViews();
+    }
 }
