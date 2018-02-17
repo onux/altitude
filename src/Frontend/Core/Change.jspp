@@ -1,0 +1,102 @@
+import System;
+
+module Altitude.Frontend
+{
+    /**
+     * Represents an individual change.
+     *
+     * @summary Represents an individual change.
+     * @example Basic Usage
+     * import Altitude.Frontend;
+     *
+     * class LoginModel : Model
+     * {
+     *     public void validateEmail(string email) {
+     *         bool result = isEmail(email);
+     *         this.updateOnly([ new Change("validate-email", result) ]);
+     *     }
+     * }
+     *
+     * class LoginView : View
+     * {
+     *     public override void updateOnly(Change[] changes) {
+     *         var $email = $(".login input[type=email]");
+     *
+     *         foreach(Change change in changes) {
+     *             if (change.key == "validate-email") {
+     *                 bool isValidEmail = (System.Boolean) change.value;
+     *                 if (isValidEmail) {
+     *                     $email.removeClass("invalid");
+     *                 }
+     *                 else {
+     *                     $email.addClass("invalid");
+     *                 }
+     *             }
+     *         }
+     *     }
+     * }
+     */
+    class Change
+    {
+        string _key;
+        System.Object _value;
+
+        /**
+         * Constructs an object representing an individual change.
+         *
+         * @summary Constructs an object representing an individual change.
+         * @param key The unique key to identify the type of change.
+         * @param value The value to associate with the change.
+         * @return An instance of the `Altitude.Frontend.Change` class.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         *
+         * class Login : Model
+         * {
+         *     public void validateEmail() {
+         *         bool result = isEmail(email);
+         *         this.updateOnly([ new Change("validate-email", result) ]);
+         *     }
+         * }
+         */
+        Change(string key, System.Object value) {
+            this._key = key;
+            this._value = value;
+        }
+
+        /**
+         * Gets the unique key for identifying the change type.
+         *
+         * @summary Gets the unique key for identifying the change type.
+         * @return The key used for identifying a change type.
+         * @example Basic Usage
+         * import System;
+         * import Altitude.Frontend;
+         *
+         * double currentTime = (new Date()).getTime();
+         * Change timeChange = new Change("time", currentTime);
+         * Console.log(timeChange.key);
+         */
+        property string key() {
+            return this._key;
+        }
+        /**
+         * Gets the value associated with a unique key for identifying the
+         * change type.
+         *
+         * @summary Gets the value associated with a unique key for identifying
+         *          the change type.
+         * @return The value associated with the change.
+         * @example Basic Usage
+         * import System;
+         * import Altitude.Frontend;
+         *
+         * double currentTime = (new Date()).getTime();
+         * Change timeChange = new Change("time", currentTime);
+         * Console.log((System.Double) timeChange.value);
+         */
+        property System.Object value() {
+            return this._value;
+        }
+    }
+}
