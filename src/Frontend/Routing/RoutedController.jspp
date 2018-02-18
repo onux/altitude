@@ -1,0 +1,9 @@
+import Altitude.Frontend.RouteEngines;
+
+module Altitude.Frontend
+{
+    abstract class RoutedController : Controller
+    {
+        public abstract void registerRoute(IRouter router);
+    }
+}

@@ -1,0 +1,11 @@
+module Altitude.Frontend.RouteEngines
+{
+    interface IRouter {
+        void listenEvents();
+        
+        void registerRoute(string route, void() show, void() hide);
+        void registerRoute(string route, void(...string arguments) show, void() hide);
+        void registerRoute(string route, void() show, void(...string arguments) hide);
+        void registerRoute(string route, void(...string arguments) show, void(...string arguments) hide);
+    }
+}

@@ -1,0 +1,8 @@
+import System;
+
+module Altitude.Frontend.RouteEngines
+{
+    class InvalidRouteException : System.Exception
+    {
+    }
+}

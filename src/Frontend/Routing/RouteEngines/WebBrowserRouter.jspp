@@ -1,0 +1,111 @@
+import System;
+import Externals.DOM;
+
+module Altitude.Frontend.RouteEngines
+{
+    class WebBrowserRouter : IRouter
+    {
+        private System.RegExp routeRegex = /[^\/]+/g;
+        private Dictionary<external> routeOn  = {};
+        private Dictionary<external> routeOff = {};
+
+        public override void listenEvents() {
+            window.onhashchange = this.onhashchange;
+        }
+
+        public override void registerRoute(string hash, void() show, void() hide) {
+            string normalizedHash = normalize(hash);
+
+            this.routeOn[normalizedHash]  = show;
+            this.routeOff[normalizedHash] = hide;
+        }
+        public override void registerRoute(string hash, void(...string arguments) show, void() hide) {
+            string normalizedHash = normalize(hash);
+
+            this.routeOn[normalizedHash]  = show;
+            this.routeOff[normalizedHash] = hide;
+        }
+        public override void registerRoute(string hash, void() show, void(...string arguments) hide) {
+            string normalizedHash = normalize(hash);
+
+            this.routeOn[normalizedHash]  = show;
+            this.routeOff[normalizedHash] = hide;
+        }
+        public override void registerRoute(string hash, void(...string arguments) show, void(...string arguments) hide) {
+            string normalizedHash = normalize(hash);
+
+            this.routeOn[normalizedHash]  = show;
+            this.routeOff[normalizedHash] = hide;
+        }
+
+        private bool onhashchange() {
+            string goto = location.hash.replace(/^#/, "");
+
+            for(string route in this.routeOff) {
+                if (this.matchRoute(route, goto)) continue;
+
+                this.routeOff[route]();
+            }
+
+            for (string key in this.routeOn) {
+                if (this.matchRoute(key, goto)) {
+                    string[] arguments = getRouteArguments(key, goto);
+
+                    if (arguments.length == 0) {
+                        this.routeOn[key]();
+                    }
+                    else {
+                        this.routeOn[key].apply(null, arguments);
+                    }
+                    return true;
+                }
+            }
+
+            return true;
+        }
+
+        private string normalize(string hash) {
+            return hash.replace(/^[#\/]/, "");
+        }
+
+        /**
+         * Match a route (which may include placeholders, e.g. /user/:id) with
+         * a hash value where the web browser is currently navigated to.
+         */
+        private bool matchRoute(string route, string hash) {
+            string[] splitRoute = this.routeRegex.exec(route);
+            string[] splitHash  = this.routeRegex.exec(hash);
+
+            if (splitRoute.length != splitHash.length) return false;
+            else {
+                return splitRoute.every(bool(string part1, int index) {
+                    string part2 = splitHash[index];
+
+                    bool isPlaceholder = part1.substring(0, 1) == ":";
+                    return isPlaceholder || part1 == part2;
+                });
+            }
+        }
+
+        private string[] getRouteArguments(string route, string hash) {
+            string[] splitRoute = this.routeRegex.exec(route);
+            string[] splitHash  = this.routeRegex.exec(hash);
+
+            if (splitRoute.length != splitHash.length) {
+                throw new InvalidRouteException();
+            }
+            else {
+                string[] result = [];
+                splitRoute.forEach(void(string part1, int index) {
+                    string part2 = splitHash[index];
+
+                    bool isPlaceholder = part1.substring(0, 1) == ":";
+                    if (isPlaceholder) {
+                        result.push(part2);
+                    }
+                });
+                return result;
+            }
+        }
+    }
+}
