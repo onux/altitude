@@ -1,0 +1,25 @@
+import Altitude.Frontend;
+
+module CounterExample
+{
+    class CounterModel : Model
+    {
+        private unsigned int value = 0;
+
+        public void increment() {
+            this.value++;
+
+            // Update all attached views
+            this.updateAll();
+        }
+
+        // Define a function to convert the internal JS++ type (`CounterModel`
+        // class) to an external type (JavaScript object) so that Handlebars
+        // will be able to understand it.
+        public override function toExternal() {
+            return {
+                value: this.value
+            };
+        }
+    }
+}

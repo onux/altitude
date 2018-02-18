@@ -1,0 +1,5 @@
+import CounterExample;
+
+CounterController counterController = new CounterController();
+counterController.attachViews();  // Don't attach views in your test code
+counterController.listenEvents(); // Don't listen for events in your test code

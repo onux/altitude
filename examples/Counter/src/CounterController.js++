@@ -1,0 +1,32 @@
+import Altitude.Frontend;
+import Externals.DOM;
+
+external $;
+
+module CounterExample
+{
+    class CounterController : Controller
+    {
+        CounterView view = new CounterView();
+        CounterModel model = new CounterModel();
+
+        // Attach views to models.
+        // This allows us to easily separate models and views.
+        // In your test code, don't attach views to your models for easier
+        // testing.
+        public override void attachViews() {
+            this.model.attach(this.view);
+            this.view.initialize(this.model); // Perform initial render
+        }
+        // Listen to user input events - the classic controller responsibility.
+        // For easier testing, don't listen for events in your test code.
+        public override void listenEvents() {
+            $("#start").click(this.buttonClickHandler);
+        }
+
+        private void buttonClickHandler() {
+            CounterController _this = this;
+            setInterval(void() { _this.model.increment(); }, 200);
+        }
+    }
+}

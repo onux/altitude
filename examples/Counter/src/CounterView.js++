@@ -1,0 +1,28 @@
+import Altitude.Frontend;
+
+external $;
+
+module CounterExample
+{
+    // Views in Altitude are "dumb views" that are neither aware of the model
+    // nor the controller.
+    class CounterView : View
+    {
+        public CounterView() {
+            // Altitude Frontend depends on Handlebars.
+            // Templating uses the Handlebars syntax.
+            super(
+                """
+                <span class="counter-value">{{value}}</span>
+                """
+            );
+        }
+
+        public override void renderTemplate(string html) {
+            // jQuery is optional in Altitude.
+            // However, we use jQuery here to take the HTML (generated using our
+            // template) and output it to the web page.
+            $("#counter-container").html(html);
+        }
+    }
+}
