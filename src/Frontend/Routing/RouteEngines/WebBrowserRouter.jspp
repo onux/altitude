@@ -11,6 +11,13 @@ module Altitude.Frontend.RouteEngines
 
         public override void listenEvents() {
             window.onhashchange = this.onhashchange;
+
+            if (window.addEventListener) {
+                window.addEventListener("load", this.onhashchange, false);
+            }
+            else {
+                window.attachEvent("onload", this.onhashchange);
+            }
         }
 
         public override void registerRoute(string hash, void() show, void() hide) {
