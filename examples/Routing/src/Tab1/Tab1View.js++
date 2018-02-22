@@ -1,0 +1,48 @@
+import Externals.DOM;
+import Altitude.Frontend;
+
+external $;
+
+module TabsExample
+{
+    // Views in Altitude are "dumb views" that are neither aware of the model
+    // nor the controller.
+    class Tab1View : View
+    {
+        public Tab1View() {
+            // Altitude Frontend depends on Handlebars.
+            // Templating uses the Handlebars syntax.
+            super(
+                """
+                <strong>{{text}}</strong>
+                <br>
+                <br>
+                <button id="tab1button" type="button" class="btn btn-primary">Click me</button>
+                """
+            );
+        }
+
+        public override void renderTemplate(string html) {
+            // jQuery is optional in Altitude.
+            // However, we use jQuery here to take the HTML (generated using our
+            // template) and output it to the web page.
+            $("#content1").html(html);
+        }
+
+        public void hide() {
+            $("#content1").hide();
+            
+            $("a[href='#tab1']").removeClass("active");
+        }
+
+        public void show() {
+            $("#content1").show();
+            
+            $("a[href='#tab1']").addClass("active");
+        }
+
+        public void msgbox(evt) {
+            alert("You clicked a button in Tab 1.");
+        }
+    }
+}

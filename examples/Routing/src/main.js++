@@ -1,0 +1,40 @@
+import TabsExample;
+import Externals.DOM;
+import Altitude.Frontend;
+import Altitude.Frontend.RouteEngines;
+
+// This function allows you to initialize multiple controllers
+void initialize(WebBrowserRouter router, ...Controller controllers) {
+	foreach(Controller c in controllers) {
+		c.attachViews();
+		c.listenEvents();
+
+		// If the controller is a 'RoutedController', downcast and perform
+		// route registration
+		if (c instanceof RoutedController) {
+			((RoutedController) c).registerRoute(router);
+		}
+	}
+}
+
+// Instantiate a WebBrowserRouter to handle routing for web browser-based
+// applications. Routing will not work without an instantiated router.
+WebBrowserRouter router = new WebBrowserRouter();
+router.listenEvents();
+
+// Instantiate the controllers
+Tab1Controller tab1Controller = new Tab1Controller();
+Tab2Controller tab2Controller = new Tab2Controller();
+
+// Pass all the instantiated controllers to the 'initialize' function (defined
+// above) to attach the views, listen for events, and - for routed controllers -
+// register the routes.
+initialize(
+	router,
+
+	tab1Controller,
+	tab2Controller
+);
+
+// Set the initial route
+location.hash = "#tab1";

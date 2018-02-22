@@ -1,0 +1,18 @@
+import Altitude.Frontend;
+
+module TabsExample
+{
+    class Tab2Model : Model
+    {
+        private string text = "Tab #2";
+
+        // Define a function to convert the internal JS++ type (`Tab2Model`
+        // class) to an external type (JavaScript object) so that Handlebars
+        // will be able to understand it.
+        public override function toExternal() {
+            return {
+                text: this.text
+            };
+        }
+    }
+}
