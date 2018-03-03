@@ -1,11 +1,64 @@
 module Altitude.Frontend.RouteEngines
 {
+    /**
+     * The `IRouter` interface defines the interface for Altitude router
+     * implementations.
+     *
+     * @summary The interface for Altitude router implementations.
+     * @example Basic Usage
+     * import Altitude.Frontend.RouteEngines;
+     *
+     * class ConcreteRouter : IRouter
+     * {
+     *     // ...
+     * }
+     */
     interface IRouter {
+        /**
+         * Listen for routing events.
+         *
+         * For example, for a web browser router, this method might listen for
+         * a hash change event.
+         */
         void listenEvents();
-        
+       
+        /**
+         * @overload registerRoute
+         *
+         * The method to override to perform route registration.
+         * @param route The identifier to associate with the route. For 
+         *              example, in a web browser router, this might be a hash
+         *              (fragment identifier).
+         */
+        /**
+         * @param show The callback to execute when the route is activated.
+         * @param hide The callback to execute when the route is deactivated.
+         */ 
         void registerRoute(string route, void() show, void() hide);
+        /**
+         * @param show The callback to execute when the route is activated. The
+         *             callback arguments are the arguments passed to the route
+         *             for the route placeholders (the route "parameters").
+         * @param hide The callback to execute when the route is deactivated.
+         */ 
         void registerRoute(string route, void(...string arguments) show, void() hide);
+        /**
+         * @param show The callback to execute when the route is activated.
+         * @param hide The callback to execute when the route is deactivated.
+         *             The callback arguments are the arguments passed to the
+         *             route for the route placeholders (the route 
+         *             "parameters").
+         */ 
         void registerRoute(string route, void() show, void(...string arguments) hide);
+        /**
+         * @param show The callback to execute when the route is activated. The
+         *             callback arguments are the arguments passed to the route
+         *             for the route placeholders (the route "parameters").
+         * @param hide The callback to execute when the route is deactivated.
+         *             The callback arguments are the arguments passed to the
+         *             route for the route placeholders (the route 
+         *             "parameters").
+         */ 
         void registerRoute(string route, void(...string arguments) show, void(...string arguments) hide);
     }
 }

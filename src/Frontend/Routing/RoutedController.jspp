@@ -2,8 +2,79 @@ import Altitude.Frontend.RouteEngines;
 
 module Altitude.Frontend
 {
+    /**
+     * The `RoutedController` abstract class is the abstract base class for
+     * controllers that are associated with a route in Altitude MVC/MVP
+     * applications.
+     *
+     * @summary The abstract class for controllers associated with a route.
+     * @example Basic Usage
+     * import Altitude.Frontend;
+     * import Altitude.Frontend.RouteEngines;
+     *
+     * external $;
+     *
+     * class CustomersController : RoutedController
+     * {
+     *     Views.Customers view = new Views.Customers();
+     *     Models.Customers model = new Models.Customers();
+     *
+     *     public override void registerRoute(IRouter router) {
+     *         router.registerRoute("customers", this.view.show, this.view.hide);
+     *     }
+     *
+     *     public override void attachViews() {
+     *         this.model.attach(this.view);
+     *     }
+     *
+     *     public override void listenEvents() {
+     *         $(".customers").click(function() {
+     *             // ...
+     *         });
+     *     }
+     * }
+     *
+     * // Instantiate a WebBrowserRouter for browser-based routing
+     * WebBrowserRouter router = new WebBrowserRouter();
+     * router.listenEvents();
+     *
+     * // Instantiate the controller and register the route
+     * CustomersController customersController = new CustomersController();
+     * customersController.attachViews();         // Do not do this in your tests
+     * customersController.listenEvents();        // Do not do this in your tests
+     * customersController.registerRoute(router); // Do not do this in your tests
+     */
     abstract class RoutedController : Controller
     {
+        /**
+         * Override this method to provide isolated code for route registration.
+         * This isolated method enables clean separation of test code. In your
+         * test code, routes should not be registered; thus, this method should
+         * not be called during testing even if it is overridden.
+         *
+         * @summary The method to override to associate the controller with a
+         *          route.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         * import Altitude.Frontend.RouteEngines;
+         *
+         * class CustomersController : Controller
+         * {
+         *     public override void registerRoute(IRouter router) {
+         *         router.registerRoute("customers", this.view.show, this.view.hide);
+         *     }
+         *
+         *     // ...
+         * }
+         *
+         * // Instantiate a WebBrowserRouter for browser-based routing
+         * WebBrowserRouter router = new WebBrowserRouter();
+         * router.listenEvents();
+         *
+         * // Instantiate the controller and register the route
+         * CustomersController controller = new CustomersController();
+         * controller.registerRoute(router);
+         */
         public abstract void registerRoute(IRouter router);
     }
 }

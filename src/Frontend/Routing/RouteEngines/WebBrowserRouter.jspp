@@ -3,12 +3,44 @@ import Externals.DOM;
 
 module Altitude.Frontend.RouteEngines
 {
+    /**
+     * The `WebBrowserRouter` class provides routing for web browser-based
+     * applications based on URL hashes (fragment identifiers).
+     *
+     * In addition, route parameters are available with the following syntax:
+     *
+     * * `user/:id`
+     * * `route/:param1/:param2`
+     *
+     * @summary A router for web browser-based routing.
+     * @example Basic Usage
+     * import Altitude.Frontend.RouteEngines;
+     *
+     * WebBrowserRouter router = new WebBrowserRouter();
+     * router.listenEvents(); // Listen for hash change events
+     *
+     * SomeRoutedController controller = new SomeRoutedController();
+     * controller.registerRoute(router); // Pass the router to register routes for controllers
+     */
     class WebBrowserRouter : IRouter
     {
         private System.RegExp routeRegex = /[^\/]+/g;
         private Dictionary<external> routeOn  = {};
         private Dictionary<external> routeOff = {};
 
+        /**
+         * Listens for web browser hash change events to enable routing.
+         *
+         * @summary Listens for hash change events.
+         * @example Basic Usage
+         * import Altitude.Frontend.RouteEngines;
+         *
+         * WebBrowserRouter router = new WebBrowserRouter();
+         * router.listenEvents(); // Listen for hash change events
+         *
+         * SomeRoutedController controller = new SomeRoutedController();
+         * controller.registerRoute(router); // Pass the router to register routes for controllers
+         */
         public override void listenEvents() {
             window.onhashchange = this.onhashchange;
 
@@ -20,24 +52,175 @@ module Altitude.Frontend.RouteEngines
             }
         }
 
+        /**
+         * @overload registerRoute
+         *
+         * Registers a route with the associated hash (do not include the #
+         * symbol).
+         *
+         * Once a route becomes "active", the `show` method will be called. In
+         * addition, all inactive routes will have their `hide` method called.
+         *
+         * Route parameters are available with the following syntax:
+         *
+         * * `user/:id`
+         * * `route/:param1/:param2`
+         *
+         * @summary Registers a route.
+         */
+        /**
+         * @param hash The hash (sans the # symbol) to associate the route with.
+         * @param show The method to call when the route should be shown.
+         * @param hide The method to call when the route should be hidden.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         * import Altitude.Frontend.RouteEngines;
+         *
+         * external $;
+         *
+         * class CustomersView
+         * {
+         *     public void show() { $(".customers").show(); }
+         *     public void hide() { $(".customers").hide(); }
+         * }
+         *
+         * class CustomersController : RoutedController
+         * {
+         *     CustomersView view = new CustomersView();
+         *
+         *     public override void registerRoute(IRouter router) {
+         *         router.registerRoute("customers", this.view.show, this.view.hide);
+         *     }
+         * }
+         */
         public override void registerRoute(string hash, void() show, void() hide) {
             string normalizedHash = normalize(hash);
 
             this.routeOn[normalizedHash]  = show;
             this.routeOff[normalizedHash] = hide;
         }
+        /**
+         * @param hash The hash (sans the # symbol) to associate the route with.
+         * @param show The method to call when the route should be shown. The
+         *             arguments passed to this method are the arguments for the
+         *             route parameter(s).
+         * @param hide The method to call when the route should be hidden.
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         * import Altitude.Frontend.RouteEngines;
+         *
+         * external $;
+         *
+         * class CustomersView
+         * {
+         *     public void show(...string arguments) {
+         *         unsigned int customerID = UInteger32.fromString(arguments[0]);
+         *
+         *         $(".customers").show();
+         *         $(".customer-" + customerID.toString()).show();
+         *     }
+         *
+         *     public void hide() {
+         *         $(".customers").hide();
+         *     }
+         * }
+         *
+         * class CustomersController : RoutedController
+         * {
+         *     CustomersView view = new CustomersView();
+         *
+         *     public override void registerRoute(IRouter router) {
+         *         router.registerRoute("customers/:id", this.view.show, this.view.hide);
+         *     }
+         * }
+         */
         public override void registerRoute(string hash, void(...string arguments) show, void() hide) {
             string normalizedHash = normalize(hash);
 
             this.routeOn[normalizedHash]  = show;
             this.routeOff[normalizedHash] = hide;
         }
+        /**
+         * @param hash The hash (sans the # symbol) to associate the route with.
+         * @param show The method to call when the route should be shown.
+         * @param hide The method to call when the route should be hidden. The
+         *             arguments passed to this method are the arguments for the
+         *             route parameter(s).
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         * import Altitude.Frontend.RouteEngines;
+         *
+         * external $;
+         *
+         * class CustomersView
+         * {
+         *     public void show() {
+         *         $(".customers").show();
+         *     }
+         *
+         *     public void hide(...string arguments) {
+         *         unsigned int customerID = UInteger32.fromString(arguments[0]);
+         *
+         *         $(".customers").hide();
+         *         $(".customer-" + customerID.toString()).hide();
+         *     }
+         * }
+         *
+         * class CustomersController : RoutedController
+         * {
+         *     CustomersView view = new CustomersView();
+         *
+         *     public override void registerRoute(IRouter router) {
+         *         router.registerRoute("customers/:id", this.view.show, this.view.hide);
+         *     }
+         * }
+         */
         public override void registerRoute(string hash, void() show, void(...string arguments) hide) {
             string normalizedHash = normalize(hash);
 
             this.routeOn[normalizedHash]  = show;
             this.routeOff[normalizedHash] = hide;
         }
+        /**
+         * @param hash The hash (sans the # symbol) to associate the route with.
+         * @param show The method to call when the route should be shown. The
+         *             arguments passed to this method are the arguments for the
+         *             route parameter(s).
+         * @param hide The method to call when the route should be hidden. The
+         *             arguments passed to this method are the arguments for the
+         *             route parameter(s).
+         * @example Basic Usage
+         * import Altitude.Frontend;
+         * import Altitude.Frontend.RouteEngines;
+         *
+         * external $;
+         *
+         * class CustomersView
+         * {
+         *     public void show(...string arguments) {
+         *         unsigned int customerID = UInteger32.fromString(arguments[0]);
+         *
+         *         $(".customers").show();
+         *         $(".customer-" + customerID.toString()).show();
+         *     }
+         *
+         *     public void hide(...string arguments) {
+         *         unsigned int customerID = UInteger32.fromString(arguments[0]);
+         *
+         *         $(".customers").hide();
+         *         $(".customer-" + customerID.toString()).hide();
+         *     }
+         * }
+         *
+         * class CustomersController : RoutedController
+         * {
+         *     CustomersView view = new CustomersView();
+         *
+         *     public override void registerRoute(IRouter router) {
+         *         router.registerRoute("customers/:id", this.view.show, this.view.hide);
+         *     }
+         * }
+         */
         public override void registerRoute(string hash, void(...string arguments) show, void(...string arguments) hide) {
             string normalizedHash = normalize(hash);
 
@@ -45,6 +228,9 @@ module Altitude.Frontend.RouteEngines
             this.routeOff[normalizedHash] = hide;
         }
 
+        /*
+         * Event handler for 'hashchange' event.
+         */
         private bool onhashchange() {
             string goto = location.hash.replace(/^#/, "");
 
@@ -71,11 +257,15 @@ module Altitude.Frontend.RouteEngines
             return true;
         }
 
+        /*
+         * Removes the hash (#) symbol or preceding slash (/) from the 
+         * beginning of a string.
+         */
         private string normalize(string hash) {
             return hash.replace(/^[#\/]/, "");
         }
 
-        /**
+        /*
          * Match a route (which may include placeholders, e.g. /user/:id) with
          * a hash value where the web browser is currently navigated to.
          */
@@ -94,9 +284,12 @@ module Altitude.Frontend.RouteEngines
             }
         }
 
-        private string[] getRouteArguments(string route, string hash) {
-            string[] splitRoute = this.routeRegex.exec(route);
-            string[] splitHash  = this.routeRegex.exec(hash);
+        /*
+         * Returns arguments used for route placeholders. 
+         */
+        private string[] getRouteArguments(string route_placeholders, string route_actual) {
+            string[] splitRoute = this.routeRegex.exec(route_placeholders);
+            string[] splitHash  = this.routeRegex.exec(route_actual);
 
             if (splitRoute.length != splitHash.length) {
                 throw new InvalidRouteException();

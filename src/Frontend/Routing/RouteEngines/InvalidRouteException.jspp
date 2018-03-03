@@ -2,6 +2,13 @@ import System;
 
 module Altitude.Frontend.RouteEngines
 {
+    /**
+     * `InvalidRouteException` is thrown when attempting to navigate to a route
+     * that was either not defined or not well-formed.
+     *
+     * @summary An exception thrown when attempting to navigate to invalid
+     *          routes.
+     */
     class InvalidRouteException : System.Exception
     {
     }
