@@ -1,0 +1,10 @@
+/**
+ * The `RouteEngines` module houses the classes and interfaces that enable
+ * routing in Altitude.
+ *
+ * @summary Provides interfaces and classes that power routing.
+ */
+module Altitude.Frontend.RouteEngines
+{
+    /* INTENTIONALLY EMPTY */
+}
