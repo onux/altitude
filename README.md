@@ -45,7 +45,7 @@ Altitude Backend provides the following components:
 
 ## Links
 
-* [Documentation](https://docs.onux.com/en-US/Developers/JavaScript-PP/Altitude-MVC)
+* [Documentation](https://docs.onux.com/en-US/Developers/JavaScript-PP/Libraries/Altitude-MVC)
 
 ## License
 
